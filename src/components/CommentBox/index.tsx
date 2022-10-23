@@ -1,6 +1,8 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useState } from "react";
 import styled from "styled-components";
 import { CommentBoxProps } from "../../interfaces";
+import { useCommentContext } from "../../context/CommentContext";
+import { ColumnContainer, RowContainer } from "../../layout";
 
 enum ControlEvent {
   SAVE = "save",
@@ -11,44 +13,49 @@ interface ControlProps {
   onControlClicked: (controlType: ControlEvent) => (e: SyntheticEvent) => void;
 }
 
-const Box = styled.div<{ x: number; y: number }>`
+const Box = styled(ColumnContainer)<{ x: number; y: number }>`
   top: ${(props) => props.y + 10}px;
   left: ${(props) => props.x}px;
   position: absolute;
-  display: flex;
-  flex-direction: column;
   font-size: 12px;
-  background: black;
-  min-width: 100px;
-  color: white;
+  min-width: 200px;
   border-radius: 0.2rem;
-  padding: 0.2rem;
+  border: 1px solid #eaeaea;
+  padding: 0.5rem;
 `;
 
-const Title = styled.h3`
+const Title = styled.h4`
   padding: 0;
   margin: 0;
+  padding: 0.2rem 0 0.5rem 0;
 `;
 
 const CommentArea = styled.textarea`
   width: 97%;
+  min-height: 4rem;
+  border-color: #dedede;
 `;
 
 const CancelLink = styled.a`
+  display: flex;
+  align-items: center;
+  margin: 0 1rem;
+  cursor: pointer;
+  color: #1565c0;
   text-decoration: none;
 `;
 
 const SaveButton = styled.button`
   padding: 0.5rem 1rem;
-  background: #1976d2;
+  background: #90caf9;
   color: #fefefe;
   border: 0;
   cursor: pointer;
 `;
 
-const ControlsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
+const ControlsContainer = styled(RowContainer)`
+  padding: 1rem 0 0 0;
+  justify-content: flex-end;
 `;
 
 const Controls = ({ onControlClicked }: ControlProps) => {
@@ -68,8 +75,13 @@ const CommentBox = ({
   selectedText,
   x,
   y,
+  beginsAt,
+  endsAt,
   onHide,
 }: CommentBoxProps & { onHide: () => void }) => {
+  const { saveComment } = useCommentContext();
+  const [comment, setComment] = useState("");
+
   const handleControlEvent =
     (controlEvent: ControlEvent) => (e: SyntheticEvent) => {
       switch (controlEvent) {
@@ -77,6 +89,15 @@ const CommentBox = ({
           break;
         }
         case ControlEvent.SAVE: {
+          saveComment({
+            x,
+            y,
+            selectedText,
+            beginsAt,
+            endsAt,
+            comment,
+            date: new Date(),
+          });
           break;
         }
       }
@@ -86,9 +107,8 @@ const CommentBox = ({
   return selectedText ? (
     <Box x={x} y={y}>
       <Title>Unknown Title</Title>
-      <CommentArea />
+      <CommentArea onChange={(e) => setComment(e.target.value)} />
       <Controls onControlClicked={handleControlEvent} />
-      {selectedText}
     </Box>
   ) : null;
 };

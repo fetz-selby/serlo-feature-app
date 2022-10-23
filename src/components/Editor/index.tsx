@@ -1,12 +1,23 @@
 import { useEffect, useState, useRef } from "react";
 import { CommentBox } from "../CommentBox";
 import { CommentBoxProps } from "../../interfaces";
+import { RowContainer } from "../../layout";
+import { Sidebar } from "../Sidebar";
+import styled from "styled-components";
 
 interface Props {
   sentence: string;
 }
 
-const SentenceBox = ({ sentence }: Props) => {
+const Container = styled(RowContainer)`
+  padding: 1rem;
+`;
+
+const SentenceContainer = styled.div`
+  padding: 0 2rem;
+`;
+
+const Editor = ({ sentence }: Props) => {
   const [isShow, setIsShow] = useState(false);
   const [selected, setSelected] = useState<CommentBoxProps>({
     x: 0,
@@ -16,7 +27,7 @@ const SentenceBox = ({ sentence }: Props) => {
     selectedText: null,
   });
 
-  const ref = useRef<HTMLPreElement>(null);
+  const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -41,20 +52,23 @@ const SentenceBox = ({ sentence }: Props) => {
   const { x, y, beginsAt, endsAt, selectedText } = selected;
 
   return (
-    <>
-      <pre ref={ref}>{sentence}</pre>
-      {isShow && (
-        <CommentBox
-          x={x}
-          y={y}
-          beginsAt={beginsAt}
-          endsAt={endsAt}
-          selectedText={selectedText}
-          onHide={() => setIsShow(false)}
-        />
-      )}
-    </>
+    <Container>
+      <Sidebar />
+      <SentenceContainer>
+        <p ref={ref}>{sentence}</p>
+        {isShow && (
+          <CommentBox
+            x={x}
+            y={y}
+            beginsAt={beginsAt}
+            endsAt={endsAt}
+            selectedText={selectedText}
+            onHide={() => setIsShow(false)}
+          />
+        )}
+      </SentenceContainer>
+    </Container>
   );
 };
 
-export { SentenceBox };
+export { Editor };

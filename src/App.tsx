@@ -1,9 +1,12 @@
 import "./App.css";
-import { SentenceBox } from "./components/SentenceBox";
+import { Editor } from "./components/Editor";
+import { CommentProvider } from "./context/CommentContext";
 
 function App() {
   return (
-    <SentenceBox sentence="There're always problems to solve, and this one in particular is Serlos problem" />
+    <CommentProvider>
+      <Editor sentence="There're always problems to solve, and this one in particular is Serlos problem" />
+    </CommentProvider>
   );
 }
 

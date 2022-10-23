@@ -7,3 +7,8 @@ export interface CommentBoxProps {
   x: number;
   y: number;
 }
+
+export type SavedComment = CommentBoxProps & {
+  date: Date;
+  comment: string;
+};
