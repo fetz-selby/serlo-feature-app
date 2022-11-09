@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from "react";
-import { CommentBox } from "../CommentBox";
-import { CommentBoxProps } from "../../interfaces";
-import { RowContainer } from "../../layout";
-import { Sidebar } from "../Sidebar";
-import styled from "styled-components";
+import { useEffect, useState, useRef } from 'react';
+import { CommentBox } from '../CommentBox';
+import { CommentBoxProps } from '../../interfaces';
+import { RowContainer } from '../../layout';
+import { Sidebar } from '../Sidebar';
+import styled from 'styled-components';
+import { SlateCommentBox } from '../SlateCommentBox';
 
 interface Props {
   sentence: string;
@@ -55,8 +56,8 @@ const Editor = ({ sentence }: Props) => {
     <Container>
       <Sidebar />
       <SentenceContainer>
-        <p ref={ref}>{sentence}</p>
-        {isShow && (
+        {/* <p ref={ref}>{sentence}</p> */}
+        {/* {isShow && (
           <CommentBox
             x={x}
             y={y}
@@ -65,7 +66,8 @@ const Editor = ({ sentence }: Props) => {
             selectedText={selectedText}
             onHide={() => setIsShow(false)}
           />
-        )}
+        )} */}
+        <SlateCommentBox />
       </SentenceContainer>
     </Container>
   );
