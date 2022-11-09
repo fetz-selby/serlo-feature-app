@@ -1,12 +1,12 @@
-import { SyntheticEvent, useState } from "react";
-import styled from "styled-components";
-import { CommentBoxProps } from "../../interfaces";
-import { useCommentContext } from "../../context/CommentContext";
-import { ColumnContainer, RowContainer } from "../../layout";
+import { SyntheticEvent, useState } from 'react';
+import styled from 'styled-components';
+import { CommentBoxProps } from '../../interfaces';
+import { useCommentContext } from '../../context/CommentContext';
+import { ColumnContainer, RowContainer } from '../../layout';
 
 enum ControlEvent {
-  SAVE = "save",
-  CANCEL = "cancel",
+  SAVE = 'save',
+  CANCEL = 'cancel',
 }
 
 interface ControlProps {
@@ -58,6 +58,10 @@ const ControlsContainer = styled(RowContainer)`
   justify-content: flex-end;
 `;
 
+const FormattingTools = () => {
+  return <RowContainer></RowContainer>;
+};
+
 const Controls = ({ onControlClicked }: ControlProps) => {
   return (
     <ControlsContainer>
@@ -75,12 +79,10 @@ const CommentBox = ({
   selectedText,
   x,
   y,
-  beginsAt,
-  endsAt,
   onHide,
 }: CommentBoxProps & { onHide: () => void }) => {
   const { saveComment } = useCommentContext();
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
 
   const handleControlEvent =
     (controlEvent: ControlEvent) => (e: SyntheticEvent) => {
@@ -93,8 +95,6 @@ const CommentBox = ({
             x,
             y,
             selectedText,
-            beginsAt,
-            endsAt,
             comment,
             date: new Date(),
           });

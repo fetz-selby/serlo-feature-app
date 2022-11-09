@@ -1,11 +1,5 @@
-import {
-  createContext,
-  ReactNode,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
-import { SavedComment } from "../interfaces";
+import { createContext, ReactNode, useState, useContext } from 'react';
+import { SavedComment } from '../interfaces';
 
 interface Props {
   children: ReactNode;
@@ -25,10 +19,6 @@ const useCommentContext = () => useContext(CommentContext);
 
 const CommentProvider = ({ children }: Props) => {
   const [comments, setComment] = useState(initialData.comments);
-
-  useEffect(() => {
-    console.log("comments now, ", comments);
-  }, [comments]);
 
   const contextValue = {
     comments,

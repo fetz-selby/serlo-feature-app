@@ -59,8 +59,6 @@ const SlateCommentBox = () => {
   const [selected, setSelected] = useState<CommentBoxProps>({
     x: 0,
     y: 0,
-    beginsAt: 0,
-    endsAt: 0,
     selectedText: null,
   });
 
@@ -73,40 +71,43 @@ const SlateCommentBox = () => {
     }
   }, []);
 
-  const renderLeaf = useCallback((props: any) => {
-    return <Leaf {...props} />;
-  }, []);
+  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
 
   const handleOnHighlight = (e: { clientX: number; clientY: number }) => {
-    setSelected({
-      x: e.clientX,
-      y: e.clientY,
-      selectedText: null,
-      beginsAt: 0,
-      endsAt: 0,
-    });
+    /*
+        Upon highlighting check if the selection indeed has a string
+        of length greater than 0
+    */
 
-    Transforms.setNodes(
-      editor,
-      // @ts-ignore
-      { bold: true },
-      // @ts-ignore
-      {
-        match: (n) => {
-          // @ts-ignore
-          setSelected((prev) => ({ ...prev, selectedText: n.text }));
-          // @ts-ignore
-          setIsShow(!!n.text);
-          return Text.isText(n);
-        },
-        split: true,
-      }
-    );
+    if (
+      editor &&
+      editor.selection &&
+      Editor.string(editor, editor.selection).length
+    ) {
+      console.log('[PASSED]came here!');
+
+      setIsShow(true);
+      setSelected({
+        x: e.clientX,
+        y: e.clientY,
+        selectedText: Editor.string(editor, editor.selection),
+      });
+    }
+
+    // Transforms.setNodes(
+    //   editor,
+    //   // @ts-ignore
+    //   { bold: true },
+    //   {
+    //     match: (n) => Text.isText(n),
+    //     split: true,
+    //   }
+    // );
     console.log('Event, ', e);
     console.log('Editor, ', editor);
   };
 
-  const { x, y, beginsAt, endsAt, selectedText } = selected;
+  const { x, y, selectedText } = selected;
 
   return (
     <Slate editor={editor} value={initialValue}>
@@ -119,8 +120,6 @@ const SlateCommentBox = () => {
         <CommentBox
           x={x}
           y={y}
-          beginsAt={beginsAt}
-          endsAt={endsAt}
           selectedText={selectedText}
           onHide={() => setIsShow(false)}
         />

@@ -23,8 +23,6 @@ const Editor = ({ sentence }: Props) => {
   const [selected, setSelected] = useState<CommentBoxProps>({
     x: 0,
     y: 0,
-    beginsAt: 0,
-    endsAt: 0,
     selectedText: null,
   });
 
@@ -45,12 +43,12 @@ const Editor = ({ sentence }: Props) => {
     const isShow = !!selectedText.trim().length;
 
     if (isShow) {
-      setSelected({ x: clientX, y: clientY, selectedText, beginsAt, endsAt });
+      setSelected({ x: clientX, y: clientY, selectedText });
     }
     setIsShow(isShow);
   };
 
-  const { x, y, beginsAt, endsAt, selectedText } = selected;
+  const { x, y, selectedText } = selected;
 
   return (
     <Container>
