@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { CommentBox } from '../CommentBox';
-import { CommentBoxProps } from '../../interfaces';
+import { CommentBoxProps, CommentValueProps } from '../../interfaces';
 import { RowContainer } from '../../layout';
 import { Sidebar } from '../Sidebar';
 import styled from 'styled-components';
@@ -20,7 +20,7 @@ const SentenceContainer = styled.div`
 
 const Editor = ({ sentence }: Props) => {
   const [isShow, setIsShow] = useState(false);
-  const [selected, setSelected] = useState<CommentBoxProps>({
+  const [selected, setSelected] = useState<CommentValueProps>({
     x: 0,
     y: 0,
     selectedText: null,

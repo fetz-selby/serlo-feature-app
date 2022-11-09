@@ -1,8 +1,10 @@
 import { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
-import { CommentBoxProps } from '../../interfaces';
+import { CommentBoxComponentProps, CommentBoxProps } from '../../interfaces';
 import { useCommentContext } from '../../context/CommentContext';
 import { ColumnContainer, RowContainer } from '../../layout';
+import { FormattingBar } from './FormattingBar';
+import { FormattingBarIconTypes } from './types';
 
 enum ControlEvent {
   SAVE = 'save',
@@ -58,10 +60,6 @@ const ControlsContainer = styled(RowContainer)`
   justify-content: flex-end;
 `;
 
-const FormattingTools = () => {
-  return <RowContainer></RowContainer>;
-};
-
 const Controls = ({ onControlClicked }: ControlProps) => {
   return (
     <ControlsContainer>
@@ -80,7 +78,8 @@ const CommentBox = ({
   x,
   y,
   onHide,
-}: CommentBoxProps & { onHide: () => void }) => {
+  onFormatActionClicked,
+}: CommentBoxComponentProps) => {
   const { saveComment } = useCommentContext();
   const [comment, setComment] = useState('');
 
@@ -101,12 +100,13 @@ const CommentBox = ({
           break;
         }
       }
-      onHide();
+      onHide(comment);
     };
 
   return selectedText ? (
     <Box x={x} y={y}>
-      <Title>Unknown Title</Title>
+      {/* <Title>Unknown Title</Title> */}
+      <FormattingBar onFormatClicked={onFormatActionClicked} />
       <CommentArea onChange={(e) => setComment(e.target.value)} />
       <Controls onControlClicked={handleControlEvent} />
     </Box>

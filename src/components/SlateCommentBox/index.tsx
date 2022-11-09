@@ -7,12 +7,25 @@ import {
   Transforms,
   Text,
 } from 'slate';
-import { Slate, Editable, ReactEditor, withReact } from 'slate-react';
-import { CommentBoxProps } from '../../interfaces';
+import {
+  Slate,
+  Editable,
+  ReactEditor,
+  withReact,
+  RenderLeafProps,
+  RenderElementProps,
+} from 'slate-react';
+import { CommentValueProps } from '../../interfaces';
 import { CommentBox } from '../CommentBox';
+import { FormattingBarIconTypes } from '../CommentBox/types';
+import { CustomLeaf } from '../CustomLeaf';
 
 type CustomElement = { type: 'paragraph'; children: CustomText[] };
-type CustomText = { text: string };
+type CustomText = {
+  format: FormattingBarIconTypes;
+  comment?: string;
+  text: string;
+};
 
 declare module 'slate' {
   interface CustomTypes {
@@ -22,56 +35,45 @@ declare module 'slate' {
   }
 }
 
-const CodeElement = (props: any) => {
-  return (
-    <pre {...props.attributes}>
-      <code>{props.children}</code>
-    </pre>
-  );
-};
-
-const Leaf = (props: any) => {
-  return (
-    <span
-      {...props.attributes}
-      style={{ fontWeight: props.leaf.bold ? 'bold' : 'normal' }}
-    >
-      {props.children}
-    </span>
-  );
-};
-
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
-    children: [{ text: 'Please call me Mr. as in Herr in German!' }],
+    children: [
+      {
+        text: 'Please call me Mr. as in Herr in German!',
+        format: FormattingBarIconTypes.FORMAT_DEFAULT,
+      },
+    ],
   },
 ];
 
-const DefaultElement = (props: any) => {
+const DefaultElement = (props: RenderElementProps) => {
   return <p {...props.attributes}>{props.children}</p>;
 };
 
 const SlateCommentBox = () => {
   // Create a Slate editor object that won't change across renders.
   const [isShow, setIsShow] = useState(false);
+  const [customTextAttr, setCustomTextAttr] = useState({
+    format: FormattingBarIconTypes.FORMAT_DEFAULT,
+    comment: '',
+  });
   const [editor] = useState(() => withReact(createEditor()));
-  const [selected, setSelected] = useState<CommentBoxProps>({
+  const [selected, setSelected] = useState<CommentValueProps>({
     x: 0,
     y: 0,
     selectedText: null,
   });
 
-  const renderElement = useCallback((props: any) => {
-    switch (props.element.type) {
-      case 'code':
-        return <CodeElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
+  const renderElement = useCallback(
+    (props: RenderElementProps) => <DefaultElement {...props} />,
+    []
+  );
 
-  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <CustomLeaf {...props} />,
+    []
+  );
 
   const handleOnHighlight = (e: { clientX: number; clientY: number }) => {
     /*
@@ -84,8 +86,6 @@ const SlateCommentBox = () => {
       editor.selection &&
       Editor.string(editor, editor.selection).length
     ) {
-      console.log('[PASSED]came here!');
-
       setIsShow(true);
       setSelected({
         x: e.clientX,
@@ -93,21 +93,31 @@ const SlateCommentBox = () => {
         selectedText: Editor.string(editor, editor.selection),
       });
     }
-
-    // Transforms.setNodes(
-    //   editor,
-    //   // @ts-ignore
-    //   { bold: true },
-    //   {
-    //     match: (n) => Text.isText(n),
-    //     split: true,
-    //   }
-    // );
-    console.log('Event, ', e);
-    console.log('Editor, ', editor);
   };
 
+  const handleOnFormatActionClicked = (action: FormattingBarIconTypes) => {
+    setCustomTextAttr((prev) => ({ ...prev, format: action }));
+  };
+
+  const handleOnCommentBoxHide = (comment?: string) => {
+    if (comment) {
+      setCustomTextAttr((prev) => ({ ...prev, comment }));
+    }
+    setIsShow(false);
+  };
+
+  Transforms.setNodes(
+    editor,
+    { ...customTextAttr },
+    {
+      match: (n) => Text.isText(n),
+      split: true,
+    }
+  );
+
   const { x, y, selectedText } = selected;
+
+  console.log('Editor, ', editor);
 
   return (
     <Slate editor={editor} value={initialValue}>
@@ -121,7 +131,8 @@ const SlateCommentBox = () => {
           x={x}
           y={y}
           selectedText={selectedText}
-          onHide={() => setIsShow(false)}
+          onHide={handleOnCommentBoxHide}
+          onFormatActionClicked={handleOnFormatActionClicked}
         />
       )}
     </Slate>
