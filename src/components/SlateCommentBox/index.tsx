@@ -1,62 +1,44 @@
 import { useState, useCallback } from 'react';
-import {
-  Editor,
-  createEditor,
-  BaseEditor,
-  Descendant,
-  Transforms,
-  Text,
-} from 'slate';
+import { Editor, createEditor, Descendant, Transforms, Text } from 'slate';
 import {
   Slate,
   Editable,
-  ReactEditor,
   withReact,
   RenderLeafProps,
   RenderElementProps,
 } from 'slate-react';
-import { CommentValueProps } from '../../interfaces';
+import { story } from '../../constants';
+import { useCommentContext } from '../../context/CommentContext';
+import { CommentValueProps, Maybe } from '../../interfaces';
+import { removeItem } from '../../utils';
 import { CommentBox } from '../CommentBox';
-import { FormattingBarIconTypes } from '../CommentBox/types';
 import { CustomLeaf } from '../CustomLeaf';
-
-type CustomElement = { type: 'paragraph'; children: CustomText[] };
-type CustomText = {
-  format: FormattingBarIconTypes;
-  comment?: string;
-  text: string;
-};
-
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
+import { DefaultEditorElement } from '../DefaultEditorElement';
+import { FormattingBarIconTypes } from '../Toolbar/types';
 
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
     children: [
       {
-        text: 'Please call me Mr. as in Herr in German!',
-        format: FormattingBarIconTypes.FORMAT_DEFAULT,
+        text: story,
+        format: [FormattingBarIconTypes.DEFAULT],
+        comment: null,
       },
     ],
   },
 ];
 
-const DefaultElement = (props: RenderElementProps) => {
-  return <p {...props.attributes}>{props.children}</p>;
-};
-
 const SlateCommentBox = () => {
   // Create a Slate editor object that won't change across renders.
   const [isShow, setIsShow] = useState(false);
-  const [customTextAttr, setCustomTextAttr] = useState({
-    format: FormattingBarIconTypes.FORMAT_DEFAULT,
-    comment: '',
+  const { saveJSON } = useCommentContext();
+  const [customTextAttr, setCustomTextAttr] = useState<{
+    format: FormattingBarIconTypes[];
+    comment: Maybe<string>;
+  }>({
+    format: [FormattingBarIconTypes.DEFAULT],
+    comment: null,
   });
   const [editor] = useState(() => withReact(createEditor()));
   const [selected, setSelected] = useState<CommentValueProps>({
@@ -66,7 +48,7 @@ const SlateCommentBox = () => {
   });
 
   const renderElement = useCallback(
-    (props: RenderElementProps) => <DefaultElement {...props} />,
+    (props: RenderElementProps) => <DefaultEditorElement {...props} />,
     []
   );
 
@@ -78,31 +60,61 @@ const SlateCommentBox = () => {
   const handleOnHighlight = (e: { clientX: number; clientY: number }) => {
     /*
         Upon highlighting check if the selection indeed has a string
-        of length greater than 0
+        of length greater than 0. If true then show the dialog else hide
     */
+
+    const { clientX, clientY } = e;
 
     if (
       editor &&
       editor.selection &&
-      Editor.string(editor, editor.selection).length
+      Editor.string(editor, editor.selection).length > 1
     ) {
       setIsShow(true);
       setSelected({
-        x: e.clientX,
-        y: e.clientY,
+        x: clientX,
+        y: clientY,
         selectedText: Editor.string(editor, editor.selection),
       });
+
+      /* This re-initializes the formatting because previous format
+       * still exists. Could be improved by first checking if a formatting
+       * has already been applied. if yes, it uses that value and if no, it continues
+       * with re-initialization
+       */
+      setCustomTextAttr((prev) => ({
+        ...prev,
+        format: [FormattingBarIconTypes.DEFAULT],
+      }));
+    } else {
+      setIsShow(false);
     }
   };
+  const handleOnFormatActionClicked = (
+    action: FormattingBarIconTypes,
+    state: boolean
+  ) => {
+    /**
+     * If icon is singly clicked apply the effect, else if doubly clicked, undo the effect.
+     * And if none is available, apply the default
+     */
 
-  const handleOnFormatActionClicked = (action: FormattingBarIconTypes) => {
-    setCustomTextAttr((prev) => ({ ...prev, format: action }));
+    setCustomTextAttr((prev) => {
+      if (state) {
+        return { ...prev, format: [...prev.format, action] };
+      }
+      if (prev.format.includes(action)) {
+        return { ...prev, format: removeItem(action, prev.format) };
+      }
+      return { ...prev, format: [FormattingBarIconTypes.DEFAULT] };
+    });
   };
 
-  const handleOnCommentBoxHide = (comment?: string) => {
-    if (comment) {
-      setCustomTextAttr((prev) => ({ ...prev, comment }));
-    }
+  const handleOnCommentBoxHide = (comment: Maybe<string>) => {
+    setCustomTextAttr((prev) => {
+      return { ...prev, comment };
+    });
+
     setIsShow(false);
   };
 
@@ -118,7 +130,19 @@ const SlateCommentBox = () => {
   const { x, y, selectedText } = selected;
 
   return (
-    <Slate editor={editor} value={initialValue}>
+    <Slate
+      editor={editor}
+      value={initialValue}
+      onChange={(value) => {
+        const isAstChange = editor.operations.some(
+          (op) => 'set_selection' !== op.type
+        );
+        if (isAstChange) {
+          // Save the value to Local Storage.
+          saveJSON(JSON.stringify(value));
+        }
+      }}
+    >
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}

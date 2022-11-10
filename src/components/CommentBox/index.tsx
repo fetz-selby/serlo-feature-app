@@ -1,10 +1,11 @@
 import { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
-import { CommentBoxComponentProps, CommentBoxProps } from '../../interfaces';
+import { CommentBoxComponentProps } from '../../interfaces';
 import { useCommentContext } from '../../context/CommentContext';
 import { ColumnContainer, RowContainer } from '../../layout';
 import { FormattingBar } from './FormattingBar';
-import { FormattingBarIconTypes } from './types';
+import { Typography } from '@mui/material';
+import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 
 enum ControlEvent {
   SAVE = 'save',
@@ -18,6 +19,7 @@ interface ControlProps {
 const Box = styled(ColumnContainer)<{ x: number; y: number }>`
   top: ${(props) => props.y + 10}px;
   left: ${(props) => props.x}px;
+  background-color: #ffffff;
   position: absolute;
   font-size: 12px;
   min-width: 200px;
@@ -82,6 +84,7 @@ const CommentBox = ({
 }: CommentBoxComponentProps) => {
   const { saveComment } = useCommentContext();
   const [comment, setComment] = useState('');
+  const [showCommentArea, setShowCommentArea] = useState(false);
 
   const handleControlEvent =
     (controlEvent: ControlEvent) => (e: SyntheticEvent) => {
@@ -91,8 +94,6 @@ const CommentBox = ({
         }
         case ControlEvent.SAVE: {
           saveComment({
-            x,
-            y,
             selectedText,
             comment,
             date: new Date(),
@@ -105,9 +106,16 @@ const CommentBox = ({
 
   return selectedText ? (
     <Box x={x} y={y}>
-      {/* <Title>Unknown Title</Title> */}
       <FormattingBar onFormatClicked={onFormatActionClicked} />
-      <CommentArea onChange={(e) => setComment(e.target.value)} />
+      <RowContainer onClick={() => setShowCommentArea(!showCommentArea)}>
+        <Typography sx={{ fontSize: '12px', paddingTop: '4px' }}>
+          {showCommentArea ? 'Hide comment' : 'Add comment'}
+        </Typography>
+        {showCommentArea ? <ArrowDropUp /> : <ArrowDropDown />}
+      </RowContainer>
+      {showCommentArea && (
+        <CommentArea onChange={(e) => setComment(e.target.value)} />
+      )}
       <Controls onControlClicked={handleControlEvent} />
     </Box>
   ) : null;

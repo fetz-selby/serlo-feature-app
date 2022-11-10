@@ -1,13 +1,7 @@
-interface FormattingBarProps {
-  onFormatClicked: (format: FormattingBarIconTypes) => void;
-}
+import { FormattingBarIconTypes } from '../Toolbar/types';
 
-export enum FormattingBarIconTypes {
-  FORMAT_BOLD = 'bold',
-  FORMAT_ITALIC = 'italic',
-  FORMAT_UNDERLINED = 'underlined',
-  FORMAT_STRIKETHROUGHS = 'strike',
-  FORMAT_DEFAULT = 'default',
+interface FormattingBarProps {
+  onFormatClicked: (format: FormattingBarIconTypes, state: boolean) => void;
 }
 
 export type { FormattingBarProps };

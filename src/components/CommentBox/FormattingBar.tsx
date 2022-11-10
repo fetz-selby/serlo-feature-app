@@ -1,42 +1,22 @@
 import { RowContainer } from '../../layout';
-import {
-  FormatBold,
-  FormatItalic,
-  FormatUnderlined,
-  StrikethroughS,
-} from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-import { FormattingBarIconTypes, FormattingBarProps } from './types';
+import { FormattingBarProps } from './types';
+import { FormattingBarIconTypes } from '../Toolbar/types';
+import { ToolbarElement } from '../Toolbar/ToolbarElement';
+
+const ICONS = [
+  FormattingBarIconTypes.BOLD,
+  FormattingBarIconTypes.ITALIC,
+  FormattingBarIconTypes.UNDERLINED,
+  FormattingBarIconTypes.STRIKETHROUGHS,
+];
 
 const FormattingBar = ({ onFormatClicked }: FormattingBarProps) => {
-  return (
-    <RowContainer>
-      <IconButton
-        onClick={() => onFormatClicked(FormattingBarIconTypes.FORMAT_BOLD)}
-      >
-        <FormatBold />
-      </IconButton>
-      <IconButton
-        onClick={() => onFormatClicked(FormattingBarIconTypes.FORMAT_ITALIC)}
-      >
-        <FormatItalic />
-      </IconButton>
-      <IconButton
-        onClick={() =>
-          onFormatClicked(FormattingBarIconTypes.FORMAT_UNDERLINED)
-        }
-      >
-        <FormatUnderlined />
-      </IconButton>
-      <IconButton
-        onClick={() =>
-          onFormatClicked(FormattingBarIconTypes.FORMAT_STRIKETHROUGHS)
-        }
-      >
-        <StrikethroughS />
-      </IconButton>
-    </RowContainer>
-  );
+  const renderIcons = () =>
+    ICONS.map((icon) => (
+      <ToolbarElement key={icon} icon={icon} onIconClicked={onFormatClicked} />
+    ));
+
+  return <RowContainer>{renderIcons()}</RowContainer>;
 };
 
 export { FormattingBar };

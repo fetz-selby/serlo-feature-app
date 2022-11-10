@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { useCommentContext } from "../../context/CommentContext";
-import { SavedComment } from "../../interfaces";
-import { ColumnContainer, RowContainer } from "../../layout";
+import styled from 'styled-components';
+import { useCommentContext } from '../../context/CommentContext';
+import { SavedComment } from '../../interfaces';
+import { ColumnContainer, RowContainer } from '../../layout';
 
 const SidebarContainer = styled(ColumnContainer)`
   padding: 1rem;
@@ -44,7 +44,6 @@ const CommentText = styled.p`
 const SidebarItem = ({ date, selectedText, comment }: SavedComment) => {
   return (
     <SidebarItemContainer>
-      <UserLabel>Unknow User</UserLabel>
       <DateAndTime>{date.toDateString()}</DateAndTime>
       <RowContainer>
         <PreChar>|</PreChar>
@@ -55,12 +54,20 @@ const SidebarItem = ({ date, selectedText, comment }: SavedComment) => {
   );
 };
 
+const DEFAULT_SAVED_COMMENT = {
+  selectedText: 'Nothing Selected',
+  date: new Date(),
+  comment: 'Sometimes commenting on these are great :)',
+};
+
 const Sidebar = () => {
   const { comments } = useCommentContext();
 
+  const renderSideItems = comments.length ? comments : [DEFAULT_SAVED_COMMENT];
+
   return (
     <SidebarContainer>
-      {comments.map((items) => (
+      {renderSideItems.map((items) => (
         <SidebarItem {...items} />
       ))}
     </SidebarContainer>
