@@ -117,8 +117,6 @@ const SlateCommentBox = () => {
 
   const { x, y, selectedText } = selected;
 
-  console.log('Editor, ', editor);
-
   return (
     <Slate editor={editor} value={initialValue}>
       <Editable
