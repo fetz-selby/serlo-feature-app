@@ -6,7 +6,7 @@ import { Preview } from '../Preview';
 import { useState } from 'react';
 import { useCommentContext } from '../../context/CommentContext';
 import { Button, Stack, Typography } from '@mui/material';
-import svg from '../../assets/images/serlo-logo.svg';
+import { Logo } from '../Logo';
 
 interface Props {
   text: string;
@@ -34,7 +34,7 @@ const Editor = ({ text }: Props) => {
   return (
     <Stack>
       <ImageContainer>
-        <img width="164px" height="164px" src={svg} />
+        <Logo />
         <Typography
           sx={{
             padding: '65px 10px 5px 10px',

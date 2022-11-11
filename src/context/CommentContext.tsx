@@ -14,9 +14,9 @@ interface DataProps {
 
 const initialData: DataProps = {
   comments: [],
-  saveComment: (e: SavedComment) => {},
+  saveComment: (_e: SavedComment) => {},
   jsonToBeSaved: '',
-  saveJSON: (json: string) => {},
+  saveJSON: (_json: string) => {},
 };
 
 const CommentContext = createContext(initialData);
