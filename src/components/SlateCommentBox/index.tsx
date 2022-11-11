@@ -7,7 +7,6 @@ import {
   RenderLeafProps,
   RenderElementProps,
 } from 'slate-react';
-import { story } from '../../constants';
 import { useCommentContext } from '../../context/CommentContext';
 import { CommentValueProps, Maybe } from '../../interfaces';
 import { removeItem } from '../../utils';
@@ -16,12 +15,12 @@ import { CustomLeaf } from '../CustomLeaf';
 import { DefaultEditorElement } from '../DefaultEditorElement';
 import { FormattingBarIconTypes } from '../Toolbar/types';
 
-const initialValue: Descendant[] = [
+const getInitialValue = (text: string): Descendant[] => [
   {
     type: 'paragraph',
     children: [
       {
-        text: story,
+        text,
         format: [FormattingBarIconTypes.DEFAULT],
         comment: null,
       },
@@ -29,7 +28,7 @@ const initialValue: Descendant[] = [
   },
 ];
 
-const SlateCommentBox = () => {
+const SlateCommentBox = ({ initialText }: { initialText: string }) => {
   // Create a Slate editor object that won't change across renders.
   const [isShow, setIsShow] = useState(false);
   const { saveJSON } = useCommentContext();
@@ -132,7 +131,7 @@ const SlateCommentBox = () => {
   return (
     <Slate
       editor={editor}
-      value={initialValue}
+      value={getInitialValue(initialText)}
       onChange={(value) => {
         const isAstChange = editor.operations.some(
           (op) => 'set_selection' !== op.type
