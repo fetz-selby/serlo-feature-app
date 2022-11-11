@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import { useCommentContext } from '../../context/CommentContext';
 import { SavedComment } from '../../interfaces';
@@ -14,9 +15,6 @@ const SidebarItemContainer = styled(ColumnContainer)`
   padding: 0 0 2rem 0;
 `;
 
-const UserLabel = styled.h4`
-  margin: 0;
-`;
 const DateAndTime = styled.span`
   font-size: 12px;
   color: #a1a1a1;
@@ -35,12 +33,6 @@ const SelectedText = styled(SelectedTextDefault)`
   font-style: italic;
 `;
 
-const CommentText = styled.p`
-  margin: 0;
-  padding-top: 0.5rem;
-  font-size: 14px;
-`;
-
 const SidebarItem = ({ date, selectedText, comment }: SavedComment) => {
   return (
     <SidebarItemContainer>
@@ -49,7 +41,9 @@ const SidebarItem = ({ date, selectedText, comment }: SavedComment) => {
         <PreChar>|</PreChar>
         <SelectedText>{` ${selectedText}`}</SelectedText>
       </RowContainer>
-      <CommentText>{comment}</CommentText>
+      <Typography sx={{ fontSize: '14px', paddingTop: '10px', width: '200px' }}>
+        {comment}
+      </Typography>
     </SidebarItemContainer>
   );
 };
