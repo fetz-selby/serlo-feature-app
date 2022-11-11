@@ -8,6 +8,7 @@ const ICONS = [
   FormattingBarIconTypes.ITALIC,
   FormattingBarIconTypes.UNDERLINED,
   FormattingBarIconTypes.STRIKETHROUGHS,
+  FormattingBarIconTypes.BRUSH,
 ];
 
 const FormattingBar = ({ onFormatClicked }: FormattingBarProps) => {

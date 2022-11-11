@@ -11,6 +11,7 @@ const LEAF_STYLE = new Map([
   [FormattingBarIconTypes.ITALIC, ['fontStyle', 'italic']],
   [FormattingBarIconTypes.UNDERLINED, ['textDecoration', 'underline']],
   [FormattingBarIconTypes.STRIKETHROUGHS, ['textDecoration', 'line-through']],
+  [FormattingBarIconTypes.BRUSH, ['backgroundColor', '#ffeb3b']],
 ]);
 
 const getLeafRenderStyle = (icons: FormattingBarIconTypes[]) => {

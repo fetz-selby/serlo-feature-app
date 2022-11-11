@@ -3,5 +3,6 @@ export enum FormattingBarIconTypes {
   ITALIC = 'italic',
   UNDERLINED = 'underlined',
   STRIKETHROUGHS = 'strike',
+  BRUSH = 'brush',
   DEFAULT = 'normal',
 }
