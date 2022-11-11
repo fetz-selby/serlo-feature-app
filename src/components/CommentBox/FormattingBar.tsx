@@ -1,7 +1,7 @@
 import { RowContainer } from '../../layout';
 import { FormattingBarProps } from './types';
 import { FormattingBarIconTypes } from '../Toolbar/types';
-import { ToolbarElement } from '../Toolbar/ToolbarElement';
+import { ToolbarElement } from '../../hoc/ToolbarElement';
 
 const ICONS = [
   FormattingBarIconTypes.BOLD,

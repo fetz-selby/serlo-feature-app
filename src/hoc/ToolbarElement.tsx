@@ -1,7 +1,7 @@
 import { IconButton } from '@mui/material';
 import { cloneElement, useCallback, useId, useState } from 'react';
-import { getIconRender } from './IconsMap';
-import { FormattingBarIconTypes } from './types';
+import { getIconRender } from '../components/Toolbar/IconsMap';
+import { FormattingBarIconTypes } from '../components/Toolbar/types';
 
 interface ToolbarElementProps {
   icon: FormattingBarIconTypes;
