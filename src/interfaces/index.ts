@@ -41,5 +41,5 @@ export type CommentBoxComponentProps = CommentValueProps & {
 export type SavedComment = {
   selectedText: Maybe<string>;
   date: Date;
-  comment: string;
+  comment: Maybe<string>;
 };

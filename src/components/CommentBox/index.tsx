@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
-import { CommentBoxComponentProps } from '../../interfaces';
+import { CommentBoxComponentProps, Maybe } from '../../interfaces';
 import { useCommentContext } from '../../context/CommentContext';
 import { ColumnContainer, RowContainer } from '../../layout';
 import { FormattingBar } from './FormattingBar';
@@ -81,7 +81,7 @@ const CommentBox = ({
   onFormatActionClicked,
 }: CommentBoxComponentProps) => {
   const { saveComment } = useCommentContext();
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState<Maybe<string>>(null);
   const [showCommentArea, setShowCommentArea] = useState(false);
 
   const handleControlEvent =
