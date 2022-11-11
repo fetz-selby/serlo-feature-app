@@ -18,10 +18,10 @@ const ToolbarElement = ({ icon, onIconClicked }: ToolbarElementProps) => {
   const [toggle, setToggle] = useState(false);
   const iconId = useId();
 
-  const handleOnIconClicked = () => {
+  const handleOnIconClicked = useCallback(() => {
     setToggle((prev) => !prev);
     onIconClicked(icon, !toggle);
-  };
+  }, [toggle]);
 
   const cloned = cloneElement(<IconButton />, {
     id: iconId,
