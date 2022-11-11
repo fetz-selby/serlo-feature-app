@@ -137,7 +137,7 @@ const SlateCommentBox = ({ initialText }: { initialText: string }) => {
           (op) => 'set_selection' !== op.type
         );
         if (isAstChange) {
-          // Save the value to Local Storage.
+          // Push data to context (CommentProvider)
           saveJSON(JSON.stringify(value));
         }
       }}
