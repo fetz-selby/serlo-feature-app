@@ -4,10 +4,13 @@ import { FormattingBarIconTypes } from '../components/Toolbar/types';
 
 export type Maybe<T> = T | null | undefined;
 
-type CustomElement = { type: 'paragraph'; children: CustomText[] };
-type CustomText = {
+export type CustomTextOption = {
   format: FormattingBarIconTypes[];
   comment: Maybe<string>;
+};
+type CustomElement = { type: 'paragraph'; children: CustomText[] };
+type CustomText = {
+  options: CustomTextOption;
   text: string;
 };
 declare module 'slate' {

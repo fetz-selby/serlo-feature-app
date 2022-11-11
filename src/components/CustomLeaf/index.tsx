@@ -2,7 +2,7 @@ import { RenderLeafProps } from 'slate-react/dist/components/editable';
 import { getLeafRenderStyle } from '../Toolbar/LeafRenderStyle';
 
 const CustomLeaf = (props: RenderLeafProps) => {
-  const style = getLeafRenderStyle(props.leaf.format);
+  const style = getLeafRenderStyle(props.leaf.options.format);
 
   return (
     <span {...props.attributes} style={style}>

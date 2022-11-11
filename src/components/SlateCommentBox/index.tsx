@@ -8,7 +8,7 @@ import {
   RenderElementProps,
 } from 'slate-react';
 import { useCommentContext } from '../../context/CommentContext';
-import { CommentValueProps, Maybe } from '../../interfaces';
+import { CommentValueProps, CustomTextOption, Maybe } from '../../interfaces';
 import { removeItem } from '../../utils';
 import { CommentBox } from '../CommentBox';
 import { CustomLeaf } from '../CustomLeaf';
@@ -21,8 +21,7 @@ const getInitialValue = (text: string): Descendant[] => [
     children: [
       {
         text,
-        format: [FormattingBarIconTypes.DEFAULT],
-        comment: null,
+        options: { format: [FormattingBarIconTypes.DEFAULT], comment: null },
       },
     ],
   },
@@ -33,11 +32,12 @@ const SlateCommentBox = ({ initialText }: { initialText: string }) => {
   const [isShow, setIsShow] = useState(false);
   const { saveJSON } = useCommentContext();
   const [customTextAttr, setCustomTextAttr] = useState<{
-    format: FormattingBarIconTypes[];
-    comment: Maybe<string>;
+    options: CustomTextOption;
   }>({
-    format: [FormattingBarIconTypes.DEFAULT],
-    comment: null,
+    options: {
+      format: [FormattingBarIconTypes.DEFAULT],
+      comment: null,
+    },
   });
   const [editor] = useState(() => withReact(createEditor()));
   const [selected, setSelected] = useState<CommentValueProps>({
@@ -83,7 +83,10 @@ const SlateCommentBox = ({ initialText }: { initialText: string }) => {
        */
       setCustomTextAttr((prev) => ({
         ...prev,
-        format: [FormattingBarIconTypes.DEFAULT],
+        options: {
+          ...prev.options,
+          format: [FormattingBarIconTypes.DEFAULT],
+        },
       }));
     } else {
       setIsShow(false);
@@ -99,19 +102,32 @@ const SlateCommentBox = ({ initialText }: { initialText: string }) => {
      */
 
     setCustomTextAttr((prev) => {
+      const { format } = prev.options;
       if (state) {
-        return { ...prev, format: [...prev.format, action] };
+        return {
+          ...prev,
+          options: {
+            ...prev.options,
+            format: [...format, action],
+          },
+        };
       }
-      if (prev.format.includes(action)) {
-        return { ...prev, format: removeItem(action, prev.format) };
+      if (format.includes(action)) {
+        return {
+          ...prev,
+          options: { ...prev.options, format: removeItem(action, format) },
+        };
       }
-      return { ...prev, format: [FormattingBarIconTypes.DEFAULT] };
+      return {
+        ...prev,
+        options: { ...prev.options, format: [FormattingBarIconTypes.DEFAULT] },
+      };
     });
   };
 
   const handleOnCommentBoxHide = (comment: Maybe<string>) => {
     setCustomTextAttr((prev) => {
-      return { ...prev, comment };
+      return { ...prev, options: { ...prev.options, comment } };
     });
 
     setIsShow(false);
