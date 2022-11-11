@@ -62,6 +62,10 @@ const ControlsContainer = styled(RowContainer)`
   justify-content: flex-end;
 `;
 
+const ToggleLabelContainer = styled(RowContainer)`
+  cursor: pointer;
+`;
+
 const Controls = ({ onControlClicked }: ControlProps) => {
   return (
     <ControlsContainer>
@@ -107,12 +111,14 @@ const CommentBox = ({
   return selectedText ? (
     <Box x={x} y={y}>
       <FormattingBar onFormatClicked={onFormatActionClicked} />
-      <RowContainer onClick={() => setShowCommentArea(!showCommentArea)}>
+      <ToggleLabelContainer
+        onClick={() => setShowCommentArea(!showCommentArea)}
+      >
         <Typography sx={{ fontSize: '12px', paddingTop: '4px' }}>
           {showCommentArea ? 'Hide comment' : 'Add comment'}
         </Typography>
         {showCommentArea ? <ArrowDropUp /> : <ArrowDropDown />}
-      </RowContainer>
+      </ToggleLabelContainer>
       {showCommentArea && (
         <CommentArea onChange={(e) => setComment(e.target.value)} />
       )}

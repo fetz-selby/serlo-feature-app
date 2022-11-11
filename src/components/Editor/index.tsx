@@ -9,7 +9,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import svg from '../../assets/images/serlo-logo.svg';
 
 interface Props {
-  sentence: string;
+  text: string;
 }
 
 const Container = styled(RowContainer)`
@@ -27,7 +27,7 @@ const SentenceContainer = styled.div`
   border: 1px solid #eaeaea;
 `;
 
-const Editor = ({ sentence }: Props) => {
+const Editor = ({ text }: Props) => {
   const [showDialog, setShowDialog] = useState(false);
   const { jsonToBeSaved } = useCommentContext();
 
@@ -49,7 +49,7 @@ const Editor = ({ sentence }: Props) => {
       <Container>
         <Sidebar />
         <SentenceContainer>
-          <SlateCommentBox />
+          <SlateCommentBox initialText={text} />
         </SentenceContainer>
         <Preview
           open={showDialog}
