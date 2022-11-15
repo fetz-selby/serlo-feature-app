@@ -59,10 +59,11 @@ const Sidebar = () => {
 
   const renderSideItems = comments.length ? comments : [DEFAULT_SAVED_COMMENT];
 
+  //TODO: create an id generator for keys
   return (
     <SidebarContainer>
-      {renderSideItems.map((items) => (
-        <SidebarItem {...items} />
+      {renderSideItems.map((items, i) => (
+        <SidebarItem key={i} {...items} />
       ))}
     </SidebarContainer>
   );
